@@ -7,6 +7,17 @@ local PLAYERS = game:GetService("Players")
 
 local MOON_UI
 
+-- Function to wait for a child with a timeout
+local function WaitForChildWithTimeout(parent, childName, timeout)
+    local elapsed = 0
+    local step = 0.1
+    while not parent:FindFirstChild(childName) and elapsed < timeout do
+        task.wait(step)
+        elapsed += step
+    end
+    return parent:FindFirstChild(childName) -- Return the child if found, or nil
+end
+
 -- Load the setup script from GitHub
 local function LOAD_SETUP_SCRIPT()
     local URL = "https://raw.githubusercontent.com/ExploreDevelopmentSystems/MOON_UI/refs/heads/main/MAIN/SETUP.lua"
@@ -36,13 +47,13 @@ local function INITIALIZE_UI()
         return
     end
 
-    local MOON_FOLDER = PLAYER_GUI:FindFirstChild("MOON")
+    local MOON_FOLDER = WaitForChildWithTimeout(PLAYER_GUI, "MOON", 5)
     if not MOON_FOLDER then
-        warn("MOON GUI NOT FOUND IN PLAYERGUI.")
+        warn("MOON GUI NOT FOUND IN PLAYERGUI AFTER WAIT.")
         return
     end
 
-    local ASSETS_FOLDER = MOON_FOLDER:FindFirstChild("ASSETS")
+    local ASSETS_FOLDER = WaitForChildWithTimeout(MOON_FOLDER, "ASSETS", 5)
     if not ASSETS_FOLDER then
         warn("ASSETS FOLDER NOT FOUND IN MOON GUI.")
         return
@@ -67,25 +78,22 @@ function MOON:CreateWindow(args)
     end
 
     -- Wait for the UI to settle in CoreGui
-    task.wait(1)
-
-    -- Access MAIN frame
-    local MAIN = CORE_GUI:FindFirstChild("MOON"):FindFirstChild("MAIN")
+    local MAIN = WaitForChildWithTimeout(CORE_GUI:FindFirstChild("MOON"), "MAIN", 5)
     if not MAIN then
-        warn("MAIN FRAME NOT FOUND IN MOON UI.")
+        warn("MAIN FRAME NOT FOUND IN MOON UI AFTER WAIT.")
         return
     end
 
-    -- Access NAME and VERSION labels
-    local NAME_LABEL = MAIN:FindFirstChild("NAME")
+    -- Wait for NAME and VERSION labels
+    local NAME_LABEL = WaitForChildWithTimeout(MAIN, "NAME", 5)
     if not NAME_LABEL then
-        warn("NAME TEXTLABEL NOT FOUND IN MAIN FRAME.")
+        warn("NAME TEXTLABEL NOT FOUND IN MAIN FRAME AFTER WAIT.")
         return
     end
 
-    local VERSION_LABEL = MAIN:FindFirstChild("VERSION")
+    local VERSION_LABEL = WaitForChildWithTimeout(MAIN, "VERSION", 5)
     if not VERSION_LABEL then
-        warn("VERSION TEXTLABEL NOT FOUND IN MAIN FRAME.")
+        warn("VERSION TEXTLABEL NOT FOUND IN MAIN FRAME AFTER WAIT.")
         return
     end
 
