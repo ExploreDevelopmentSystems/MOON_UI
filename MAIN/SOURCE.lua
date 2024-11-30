@@ -71,55 +71,15 @@ local function INITIALIZE_UI()
 end
 
 -- Create a window
-function MOON:CreateWindow(args)
+function MOON:CreateWindow()
     if not MOON_UI then
         warn("MOON UI NOT INITIALIZED.")
         return
     end
 
-    -- Wait for the UI to settle in CoreGui
-    local MAIN = WaitForChildWithTimeout(CORE_GUI:FindFirstChild("MOON"), "MAIN", 5)
-    if not MAIN then
-        warn("MAIN FRAME NOT FOUND IN MOON UI AFTER WAIT.")
-        return
-    end
-
-    -- Find TEXT_TITLE and TEXT_VER
-    local TEXT_TITLE = WaitForChildWithTimeout(MAIN, "TEXT_TITLE", 5)
-    if not TEXT_TITLE then
-        warn("TEXT_TITLE NOT FOUND IN MAIN FRAME AFTER WAIT.")
-        return
-    end
-
-    local TEXT_VER = WaitForChildWithTimeout(MAIN, "TEXT_VER", 5)
-    if not TEXT_VER then
-        warn("TEXT_VER NOT FOUND IN MAIN FRAME AFTER WAIT.")
-        return
-    end
-
-    -- Set the Name and Version texts
-    if args.Name then
-        TEXT_TITLE.Text = args.Name
-    else
-        warn("NAME ARGUMENT MISSING.")
-    end
-
-    if args.Version then
-        TEXT_VER.Text = args.Version
-    else
-        warn("VERSION ARGUMENT MISSING.")
-    end
-
-    -- Toggle visibility with RightShift
-    USER_INPUT_SERVICE.InputBegan:Connect(function(input)
-        if input.KeyCode == Enum.KeyCode.RightShift then
-            MOON_UI.Enabled = not MOON_UI.Enabled
-        end
-    end)
-
     -- Enable MOON UI
     MOON_UI.Enabled = true
-    print("WINDOW CREATED AND VISIBLE.")
+    print("MOON UI ENABLED.")
 end
 
 -- Load and set up MOON UI on module initialization
