@@ -18,21 +18,6 @@ local function WaitForChildWithTimeout(parent, childName, timeout)
     return parent:FindFirstChild(childName)
 end
 
--- Function to find an object by name with a Text property
-local function FindObjectWithTextProperty(parent, objectName, timeout)
-    local elapsed = 0
-    local step = 0.1
-    while elapsed < timeout do
-        local object = parent:FindFirstChild(objectName)
-        if object and object:IsA("Instance") and object:FindFirstChildWhichIsA("Text") then
-            return object
-        end
-        task.wait(step)
-        elapsed += step
-    end
-    return nil
-end
-
 -- Load the setup script from GitHub
 local function LOAD_SETUP_SCRIPT()
     local URL = "https://raw.githubusercontent.com/ExploreDevelopmentSystems/MOON_UI/refs/heads/main/MAIN/SETUP.lua"
@@ -99,28 +84,28 @@ function MOON:CreateWindow(args)
         return
     end
 
-    -- Find NAME and VERSION objects with a Text property
-    local NAME_OBJECT = FindObjectWithTextProperty(MAIN, "NAME", 5)
-    if not NAME_OBJECT then
-        warn("NAME OBJECT WITH TEXT PROPERTY NOT FOUND.")
+    -- Find TEXT_TITLE and TEXT_VER
+    local TEXT_TITLE = WaitForChildWithTimeout(MAIN, "TEXT_TITLE", 5)
+    if not TEXT_TITLE then
+        warn("TEXT_TITLE NOT FOUND IN MAIN FRAME AFTER WAIT.")
         return
     end
 
-    local VERSION_OBJECT = FindObjectWithTextProperty(MAIN, "VERSION", 5)
-    if not VERSION_OBJECT then
-        warn("VERSION OBJECT WITH TEXT PROPERTY NOT FOUND.")
+    local TEXT_VER = WaitForChildWithTimeout(MAIN, "TEXT_VER", 5)
+    if not TEXT_VER then
+        warn("TEXT_VER NOT FOUND IN MAIN FRAME AFTER WAIT.")
         return
     end
 
     -- Set the Name and Version texts
     if args.Name then
-        NAME_OBJECT.Text = args.Name
+        TEXT_TITLE.Text = args.Name
     else
         warn("NAME ARGUMENT MISSING.")
     end
 
     if args.Version then
-        VERSION_OBJECT.Text = args.Version
+        TEXT_VER.Text = args.Version
     else
         warn("VERSION ARGUMENT MISSING.")
     end
