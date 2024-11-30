@@ -15,7 +15,22 @@ local function WaitForChildWithTimeout(parent, childName, timeout)
         task.wait(step)
         elapsed += step
     end
-    return parent:FindFirstChild(childName) -- Return the child if found, or nil
+    return parent:FindFirstChild(childName)
+end
+
+-- Function to find an object by name with a Text property
+local function FindObjectWithTextProperty(parent, objectName, timeout)
+    local elapsed = 0
+    local step = 0.1
+    while elapsed < timeout do
+        local object = parent:FindFirstChild(objectName)
+        if object and object:IsA("Instance") and object:FindFirstChildWhichIsA("Text") then
+            return object
+        end
+        task.wait(step)
+        elapsed += step
+    end
+    return nil
 end
 
 -- Load the setup script from GitHub
@@ -84,28 +99,28 @@ function MOON:CreateWindow(args)
         return
     end
 
-    -- Wait for NAME and VERSION labels
-    local NAME_LABEL = WaitForChildWithTimeout(MAIN, "NAME", 5)
-    if not NAME_LABEL then
-        warn("NAME TEXTLABEL NOT FOUND IN MAIN FRAME AFTER WAIT.")
+    -- Find NAME and VERSION objects with a Text property
+    local NAME_OBJECT = FindObjectWithTextProperty(MAIN, "NAME", 5)
+    if not NAME_OBJECT then
+        warn("NAME OBJECT WITH TEXT PROPERTY NOT FOUND.")
         return
     end
 
-    local VERSION_LABEL = WaitForChildWithTimeout(MAIN, "VERSION", 5)
-    if not VERSION_LABEL then
-        warn("VERSION TEXTLABEL NOT FOUND IN MAIN FRAME AFTER WAIT.")
+    local VERSION_OBJECT = FindObjectWithTextProperty(MAIN, "VERSION", 5)
+    if not VERSION_OBJECT then
+        warn("VERSION OBJECT WITH TEXT PROPERTY NOT FOUND.")
         return
     end
 
     -- Set the Name and Version texts
     if args.Name then
-        NAME_LABEL.Text = args.Name
+        NAME_OBJECT.Text = args.Name
     else
         warn("NAME ARGUMENT MISSING.")
     end
 
     if args.Version then
-        VERSION_LABEL.Text = args.Version
+        VERSION_OBJECT.Text = args.Version
     else
         warn("VERSION ARGUMENT MISSING.")
     end
