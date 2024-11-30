@@ -48,28 +48,40 @@ function MOON:CreateWindow(args)
         return
     end
 
-    local MAIN = MOON_UI:WaitForChild("MAIN")
-
-    if MAIN then
-        local NAME_LABEL = MAIN:WaitForChild("NAME")
-        local VERSION_LABEL = MAIN:WaitForChild("VERSION")
-
-        if args.Name then
-            NAME_LABEL.Text = args.Name
-        else
-            warn("NAME ARGUMENT MISSING.")
-        end
-
-        if args.Version then
-            VERSION_LABEL.Text = args.Version
-        else
-            warn("VERSION ARGUMENT MISSING.")
-        end
-    else
+    -- Access MAIN frame
+    local MAIN = MOON_UI:WaitForChild("MAIN", 5)
+    if not MAIN then
         warn("MAIN FRAME NOT FOUND IN MOON UI.")
+        return
     end
 
-    -- Make MOON togglable with RightShift
+    -- Access NAME and VERSION labels
+    local NAME_LABEL = MAIN:WaitForChild("NAME", 5)
+    if not NAME_LABEL then
+        warn("NAME TEXTLABEL NOT FOUND IN MAIN FRAME.")
+        return
+    end
+
+    local VERSION_LABEL = MAIN:WaitForChild("VERSION", 5)
+    if not VERSION_LABEL then
+        warn("VERSION TEXTLABEL NOT FOUND IN MAIN FRAME.")
+        return
+    end
+
+    -- Set the Name and Version texts
+    if args.Name then
+        NAME_LABEL.Text = args.Name
+    else
+        warn("NAME ARGUMENT MISSING.")
+    end
+
+    if args.Version then
+        VERSION_LABEL.Text = args.Version
+    else
+        warn("VERSION ARGUMENT MISSING.")
+    end
+
+    -- Toggle visibility with RightShift
     USER_INPUT_SERVICE.InputBegan:Connect(function(input)
         if input.KeyCode == Enum.KeyCode.RightShift then
             MOON_UI.Enabled = not MOON_UI.Enabled
@@ -80,6 +92,7 @@ function MOON:CreateWindow(args)
     MOON_UI.Enabled = true
     print("WINDOW CREATED AND VISIBLE.")
 end
+
 
 -- Load and set up MOON UI on module initialization
 LOAD_SETUP_SCRIPT()
