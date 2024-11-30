@@ -66,8 +66,11 @@ function MOON:CreateWindow(args)
         return
     end
 
+    -- Wait for the UI to settle in CoreGui
+    task.wait(1)
+
     -- Access MAIN frame
-    local MAIN = MOON_UI:FindFirstChild("MAIN")
+    local MAIN = CORE_GUI:FindFirstChild("MOON"):FindFirstChild("MAIN")
     if not MAIN then
         warn("MAIN FRAME NOT FOUND IN MOON UI.")
         return
