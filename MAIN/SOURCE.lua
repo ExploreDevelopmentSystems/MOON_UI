@@ -7,6 +7,7 @@ local PLAYERS = game:GetService("Players")
 
 local MOON_UI
 
+-- Load the setup script from GitHub
 local function LOAD_SETUP_SCRIPT()
     local URL = "https://raw.githubusercontent.com/ExploreDevelopmentSystems/MOON_UI/refs/heads/main/MAIN/SETUP.lua"
     local SUCCESS, RESPONSE = pcall(function()
@@ -25,11 +26,27 @@ local function LOAD_SETUP_SCRIPT()
     end
 end
 
+-- Initialize the UI
 local function INITIALIZE_UI()
     local PLAYER = PLAYERS.LocalPlayer
-    local PLAYER_GUI = PLAYER:WaitForChild("PlayerGui")
-    local MOON_FOLDER = PLAYER_GUI:WaitForChild("MOON")
-    local ASSETS_FOLDER = MOON_FOLDER:WaitForChild("ASSETS")
+    local PLAYER_GUI = PLAYER:FindFirstChild("PlayerGui")
+
+    if not PLAYER_GUI then
+        warn("PLAYERGUI NOT FOUND.")
+        return
+    end
+
+    local MOON_FOLDER = PLAYER_GUI:FindFirstChild("MOON")
+    if not MOON_FOLDER then
+        warn("MOON GUI NOT FOUND IN PLAYERGUI.")
+        return
+    end
+
+    local ASSETS_FOLDER = MOON_FOLDER:FindFirstChild("ASSETS")
+    if not ASSETS_FOLDER then
+        warn("ASSETS FOLDER NOT FOUND IN MOON GUI.")
+        return
+    end
 
     -- Move ASSETS to ReplicatedStorage
     ASSETS_FOLDER.Parent = REPLICATED_STORAGE
@@ -42,6 +59,7 @@ local function INITIALIZE_UI()
     print("MOON UI INITIALIZED: ASSETS MOVED TO REPLICATEDSTORAGE, UI DISABLED IN COREGUI.")
 end
 
+-- Create a window
 function MOON:CreateWindow(args)
     if not MOON_UI then
         warn("MOON UI NOT INITIALIZED.")
@@ -49,20 +67,20 @@ function MOON:CreateWindow(args)
     end
 
     -- Access MAIN frame
-    local MAIN = MOON_UI:WaitForChild("MAIN", 5)
+    local MAIN = MOON_UI:FindFirstChild("MAIN")
     if not MAIN then
         warn("MAIN FRAME NOT FOUND IN MOON UI.")
         return
     end
 
     -- Access NAME and VERSION labels
-    local NAME_LABEL = MAIN:WaitForChild("NAME", 5)
+    local NAME_LABEL = MAIN:FindFirstChild("NAME")
     if not NAME_LABEL then
         warn("NAME TEXTLABEL NOT FOUND IN MAIN FRAME.")
         return
     end
 
-    local VERSION_LABEL = MAIN:WaitForChild("VERSION", 5)
+    local VERSION_LABEL = MAIN:FindFirstChild("VERSION")
     if not VERSION_LABEL then
         warn("VERSION TEXTLABEL NOT FOUND IN MAIN FRAME.")
         return
@@ -92,7 +110,6 @@ function MOON:CreateWindow(args)
     MOON_UI.Enabled = true
     print("WINDOW CREATED AND VISIBLE.")
 end
-
 
 -- Load and set up MOON UI on module initialization
 LOAD_SETUP_SCRIPT()
